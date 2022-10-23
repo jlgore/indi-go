@@ -29,10 +29,11 @@ func main() {
 
 	data := [][]string{}
 
-	for _, row := range rows {
-		//fmt.Println(row[3])	
-		data = append(data, []string{row[1], fmt.Sprintf("%s\n", row[2]), row[3], row[4]})
-		//fmt.Printf("Page: %s, Slide Title: %s, Keyword 1: %s\n", row[1], row[2], row[3])
+	for i, row := range rows {
+		if i == 0 {
+			continue
+		}
+		data = append(data, []string{row[1], row[2], row[3], row[4]})
 	}	
 
 	mkdoc, err := os.OpenFile("SEC510-Index.md", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
