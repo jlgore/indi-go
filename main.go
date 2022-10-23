@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/xuri/excelize/v2"
-
+	"github.com/olekukonko/tablewriter"
+	"os"
+	//"bufio"
 )
 
 func main() {
@@ -28,11 +30,24 @@ func main() {
 	data := [][]string{}
 
 	for _, row := range rows {
-		for _, colCell := range row {
-			data = append(data, []string{string(colCell[B]), string(colCell[C]), string(colCell[D]), string(colCell[F])})
-		}
-	}
+		//fmt.Println(row[3])	
+		data = append(data, []string{row[1], fmt.Sprintf("%s\n", row[2]), row[3], row[4]})
+		//fmt.Printf("Page: %s, Slide Title: %s, Keyword 1: %s\n", row[1], row[2], row[3])
+	}	
 
-	fmt.Println(data)
+	mkdoc, err := os.OpenFile("SEC510-Index.md", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer mkdoc.Close()
+	
+	table := tablewriter.NewWriter(mkdoc)
+	table.SetAutoWrapText(false)
+	table.SetHeader([]string{"Page", "Slide Title", "Keyword 1", "Keyword 2"})
+	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+	table.SetCenterSeparator("|")
+	table.AppendBulk(data)
+	table.Render()
 
 }
